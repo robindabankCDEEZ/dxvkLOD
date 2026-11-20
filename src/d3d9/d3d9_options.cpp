@@ -85,7 +85,7 @@ namespace dxvk {
     // Clamp the shader model value between 0 and 3
     this->shaderModel = dxvk::clamp(this->shaderModel, 0u, 3u);
     // Clamp LOD bias so that people don't abuse this in unintended ways
-    this->samplerLodBias = dxvk::fclamp(this->samplerLodBias, -2.0f, 1.0f);
+    this->samplerLodBias = dxvk::fclamp(this->samplerLodBias, -2.0f, 16.0f);
 
     bool hasMulz = adapter != nullptr
                   && (adapter->matchesDriver(VK_DRIVER_ID_MESA_RADV)
