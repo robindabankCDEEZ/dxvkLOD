@@ -7179,6 +7179,9 @@ namespace dxvk {
       cState      = D3D9SamplerInfo(m_state.samplerStates[Sampler]),
       cIsCube     = tex && tex->IsCube(),
       cIsMultiMip = tex && (tex->Desc()->MipLevels > 1u),
+        cSkipBias   = tex && (tex->Desc()->Format == D3D9Format::DXT3
+                         || tex->Desc()->Format == D3D9Format::DXT5
+                         || tex->Desc()->Format == D3D9Format::A8R8G8B8),
       cIsDepth    = bool(m_textureSlotTracking.depth & (1u << Sampler)),
       cView       = std::move(imageView),
       cBindId     = m_samplerBindCount
@@ -7218,8 +7221,9 @@ namespace dxvk {
 
         key.setAniso(anisotropy);
 
-        float lodBias = cState.mipLodBias;
-        lodBias += m_d3d9Options.samplerLodBias;
+       float lodBias = cState.mipLodBias;
+        if (!cSkipBias)
+          lodBias += m_d3d9Options.samplerLodBias;
 
         if (m_d3d9Options.clampNegativeLodBias)
           lodBias = std::max(lodBias, 0.0f);
